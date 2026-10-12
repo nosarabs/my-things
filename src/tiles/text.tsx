@@ -5,6 +5,7 @@ import styles from './tiles.module.css';
 export const text: TileDef<'text'> = {
   label: 'Text',
   icon: NoteIcon,
+  size: { w: 6, h: 4 },
   fields: [{ name: 'text', label: 'Text', kind: 'textarea', placeholder: 'Write something…' }],
   parse(values) {
     const text = values.text.trim();

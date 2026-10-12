@@ -1,12 +1,12 @@
-import { AppsIcon, DownloadIcon, UploadIcon } from '@primer/octicons-react';
+import { AppsIcon, DownloadIcon, PlusIcon, UploadIcon } from '@primer/octicons-react';
 import { useRef, type ChangeEvent } from 'react';
 import { exportTiles, importTiles } from '../storage';
 import type { Tile } from '../types';
 import styles from './Header.module.css';
 
-type Props = { tiles: Tile[]; onImport(tiles: Tile[]): void };
+type Props = { tiles: Tile[]; onNew(): void; onImport(tiles: Tile[]): void };
 
-export function Header({ tiles, onImport }: Props) {
+export function Header({ tiles, onNew, onImport }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function handleFile(event: ChangeEvent<HTMLInputElement>) {
@@ -29,13 +29,22 @@ export function Header({ tiles, onImport }: Props) {
         <AppsIcon size={24} />
         My Things
       </h1>
-      <button type="button" className="btn" onClick={() => exportTiles(tiles)} disabled={!tiles.length}>
+      <button
+        type="button"
+        className={`btn ${styles.compact}`}
+        onClick={() => exportTiles(tiles)}
+        disabled={!tiles.length}
+      >
         <DownloadIcon size={16} />
-        Export
+        <span className={styles.label}>Export</span>
       </button>
-      <button type="button" className="btn" onClick={() => fileInput.current?.click()}>
+      <button type="button" className={`btn ${styles.compact}`} onClick={() => fileInput.current?.click()}>
         <UploadIcon size={16} />
-        Import
+        <span className={styles.label}>Import</span>
+      </button>
+      <button type="button" className="btn btn-primary" onClick={onNew}>
+        <PlusIcon size={16} />
+        New
       </button>
       <input ref={fileInput} type="file" accept=".json,application/json" hidden onChange={handleFile} />
     </header>

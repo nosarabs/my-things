@@ -6,6 +6,7 @@ import styles from './tiles.module.css';
 export const website: TileDef<'website'> = {
   label: 'Website',
   icon: GlobeIcon,
+  size: { w: 8, h: 8 },
   fields: [{ name: 'url', label: 'Website URL', kind: 'url', placeholder: 'example.com' }],
   parse(values) {
     const url = toHttpUrl(values.url);

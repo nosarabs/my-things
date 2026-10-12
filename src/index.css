@@ -17,6 +17,9 @@
   --btn-primary-bg-hover: #1c8139;
   --backdrop: #c8d1da66;
   --shadow-overlay: 0 0 0 1px #d1d9e0, 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f;
+  --mat-bg: #f6f8fa;
+  --mat-line: #d1d9e080;
+  --mat-line-major: #afb8c1;
 
   --radius: 6px;
   --radius-lg: 12px;
@@ -43,6 +46,9 @@
     --btn-primary-bg-hover: #29903b;
     --backdrop: #21283066;
     --shadow-overlay: 0 0 0 1px #3d444d, 0 24px 48px 0 #010409;
+    --mat-bg: #010409;
+    --mat-line: #3d444d66;
+    --mat-line-major: #3d444d;
   }
 }
 
@@ -73,6 +79,12 @@ body {
 
 body:has(dialog[open]) {
   overflow: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
 }
 
 h1,

@@ -6,6 +6,7 @@ import styles from './tiles.module.css';
 export const youtube: TileDef<'youtube'> = {
   label: 'YouTube',
   icon: VideoIcon,
+  size: { w: 8, h: 5 },
   fields: [
     { name: 'url', label: 'YouTube link', kind: 'url', placeholder: 'https://youtube.com/watch?v=…' },
   ],

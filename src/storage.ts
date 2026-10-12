@@ -1,10 +1,14 @@
+import { collides, COLS, MIN_SIZE } from './lib/layout';
 import { isHttpUrl, isYouTubeId } from './lib/url';
 import type { Tile, TileType } from './types';
 
-const KEY = 'my-things:v1';
+const KEY = 'my-things:v2';
+const LEGACY_KEY = 'my-things:v1';
 
 type Fields = Record<string, unknown>;
 const str = (value: unknown): value is string => typeof value === 'string';
+const int = (value: unknown, min: number): value is number =>
+  Number.isInteger(value) && (value as number) >= min;
 
 const validators: Record<TileType, (t: Fields) => boolean> = {
   youtube: (t) => str(t.videoId) && isYouTubeId(t.videoId),
@@ -18,30 +22,39 @@ function isTile(value: unknown): value is Tile {
   const t = value as Fields;
   return (
     str(t.id) &&
-    Number.isInteger(t.position) &&
-    (t.position as number) >= 0 &&
+    int(t.x, 0) &&
+    int(t.y, 0) &&
+    int(t.w, MIN_SIZE) &&
+    int(t.h, MIN_SIZE) &&
+    t.x + t.w <= COLS &&
     str(t.type) &&
     Object.hasOwn(validators, t.type) &&
     validators[t.type as TileType](t)
   );
 }
 
-/** Parses and validates serialized tiles, dropping invalid entries and duplicate positions. */
+/** Converts tiles saved by the original fixed-slot grid (4 per row) into 4x4 blocks. */
+function upgrade(value: unknown): unknown {
+  if (typeof value !== 'object' || value === null || !('position' in value)) return value;
+  const { position, ...rest } = value as Fields & { position: number };
+  return { ...rest, x: (position % 4) * 4, y: Math.floor(position / 4) * 4, w: 4, h: 4 };
+}
+
+/** Parses and validates serialized tiles, dropping invalid entries and overlapping tiles. */
 export function parseTiles(json: string): Tile[] {
   const data: unknown = JSON.parse(json);
   if (!Array.isArray(data)) throw new Error('Expected an array of tiles');
 
-  const taken = new Set<number>();
-  return data.filter(isTile).filter((tile) => {
-    if (taken.has(tile.position)) return false;
-    taken.add(tile.position);
-    return true;
-  });
+  const tiles: Tile[] = [];
+  for (const value of data.map(upgrade)) {
+    if (isTile(value) && !collides(value, tiles)) tiles.push(value);
+  }
+  return tiles;
 }
 
 export function loadTiles(): Tile[] {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(KEY) ?? localStorage.getItem(LEGACY_KEY);
     return raw ? parseTiles(raw) : [];
   } catch {
     return [];

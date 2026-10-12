@@ -7,6 +7,7 @@ import styles from './tiles.module.css';
 export const image: TileDef<'image'> = {
   label: 'Image',
   icon: ImageIcon,
+  size: { w: 6, h: 6 },
   fields: [
     { name: 'src', label: 'Image URL', kind: 'url', placeholder: 'https://example.com/photo.jpg' },
     { name: 'alt', label: 'Description (optional)', kind: 'text', placeholder: 'What is in the image?' },

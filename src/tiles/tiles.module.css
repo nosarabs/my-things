@@ -16,7 +16,8 @@
 .text {
   height: 100%;
   overflow: auto;
-  padding: 12px;
+  padding: 8px 12px;
+  font-size: 14px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }

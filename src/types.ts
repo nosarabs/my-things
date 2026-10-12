@@ -1,7 +1,12 @@
 import type { Icon } from '@primer/octicons-react';
 import type { ReactNode } from 'react';
 
-type Base = { id: string; position: number };
+/** Positions and sizes are measured in grid cells. */
+export type Cell = { x: number; y: number };
+export type Size = { w: number; h: number };
+export type Rect = Cell & Size;
+
+type Base = Rect & { id: string };
 
 export type Tile =
   | (Base & { type: 'youtube'; videoId: string })
@@ -12,7 +17,7 @@ export type Tile =
 export type TileType = Tile['type'];
 export type TileOf<K extends TileType> = Extract<Tile, { type: K }>;
 export type NewTile<K extends TileType = TileType> = K extends TileType
-  ? Omit<TileOf<K>, 'id' | 'position'>
+  ? Omit<TileOf<K>, 'id' | keyof Rect>
   : never;
 
 export type Field = {
@@ -26,6 +31,7 @@ export type Field = {
 export type TileDef<K extends TileType> = {
   label: string;
   icon: Icon;
+  size: Size;
   fields: Field[];
   parse(values: Record<string, string>): NewTile<K> | { error: string };
   title(tile: TileOf<K>): string;
