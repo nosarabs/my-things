@@ -1,0 +1,179 @@
+:root {
+  color-scheme: light dark;
+
+  --bg: #ffffff;
+  --bg-muted: #f6f8fa;
+  --bg-inset: #f6f8fa;
+  --bg-accent-muted: #ddf4ff;
+  --border: #d1d9e0;
+  --border-muted: #d1d9e0b3;
+  --fg: #1f2328;
+  --fg-muted: #59636e;
+  --fg-accent: #0969da;
+  --fg-danger: #d1242f;
+  --btn-bg: #f6f8fa;
+  --btn-bg-hover: #eff2f5;
+  --btn-primary-bg: #1f883d;
+  --btn-primary-bg-hover: #1c8139;
+  --backdrop: #c8d1da66;
+  --shadow-overlay: 0 0 0 1px #d1d9e0, 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f;
+
+  --radius: 6px;
+  --radius-lg: 12px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --bg-muted: #151b23;
+    --bg-inset: #010409;
+    --bg-accent-muted: #388bfd1a;
+    --border: #3d444d;
+    --border-muted: #3d444db3;
+    --fg: #f0f6fc;
+    --fg-muted: #9198a1;
+    --fg-accent: #4493f8;
+    --fg-danger: #f85149;
+    --btn-bg: #212830;
+    --btn-bg-hover: #262c36;
+    --btn-primary-bg: #238636;
+    --btn-primary-bg-hover: #29903b;
+    --backdrop: #21283066;
+    --shadow-overlay: 0 0 0 1px #3d444d, 0 24px 48px 0 #010409;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  /* 16px on touch screens keeps iOS from zooming into focused inputs. */
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--fg-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg-accent);
+  outline-offset: -2px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 80ms ease;
+}
+
+.btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  border-color: #1f232826;
+  background: var(--btn-primary-bg);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--btn-primary-bg-hover);
+}
+
+.btn-icon {
+  width: 32px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  color: var(--fg-muted);
+}
+
+.btn-icon:hover {
+  background: var(--btn-bg-hover);
+  color: var(--fg);
+}
+
+.input {
+  width: 100%;
+  min-height: 32px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+}
+
+.input:focus {
+  border-color: var(--fg-accent);
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--fg-accent);
+}
+
+textarea.input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

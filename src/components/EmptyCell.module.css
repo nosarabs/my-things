@@ -1,0 +1,40 @@
+.cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition:
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease;
+}
+
+.cell svg {
+  opacity: 0.6;
+}
+
+.cell:focus-visible {
+  border-color: var(--fg-accent);
+  background: var(--bg-accent-muted);
+  color: var(--fg-accent);
+}
+
+.cell:focus-visible svg {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .cell:hover {
+    border-color: var(--fg-accent);
+    background: var(--bg-accent-muted);
+    color: var(--fg-accent);
+  }
+
+  .cell:hover svg {
+    opacity: 1;
+  }
+}
