@@ -1,5 +1,5 @@
 import { collides, COLS, MIN_SIZE } from './lib/layout';
-import { isHttpUrl, isYouTubeId } from './lib/url';
+import { isHttpUrl, isImageDataUrl, isYouTubeId } from './lib/url';
 import type { Tile, TileType } from './types';
 
 const KEY = 'my-things:v2';
@@ -13,7 +13,7 @@ const int = (value: unknown, min: number): value is number =>
 const validators: Record<TileType, (t: Fields) => boolean> = {
   youtube: (t) => str(t.videoId) && isYouTubeId(t.videoId),
   text: (t) => str(t.text),
-  image: (t) => str(t.src) && isHttpUrl(t.src) && str(t.alt),
+  image: (t) => str(t.src) && (isImageDataUrl(t.src) || isHttpUrl(t.src)) && str(t.alt),
   website: (t) => str(t.url) && isHttpUrl(t.url),
 };
 
@@ -61,11 +61,13 @@ export function loadTiles(): Tile[] {
   }
 }
 
-export function saveTiles(tiles: Tile[]) {
+/** Returns false when storage is full or unavailable. */
+export function saveTiles(tiles: Tile[]): boolean {
   try {
     localStorage.setItem(KEY, JSON.stringify(tiles));
-  } catch (error) {
-    console.error('Could not save tiles', error);
+    return true;
+  } catch {
+    return false;
   }
 }
 

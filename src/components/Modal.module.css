@@ -1,0 +1,62 @@
+.modal {
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100dvh - 32px);
+  margin: auto 0 0;
+  padding: 0 0 env(safe-area-inset-bottom);
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: var(--shadow-overlay);
+}
+
+.modal::backdrop {
+  background: var(--backdrop);
+}
+
+@media (min-width: 544px) {
+  .modal {
+    width: 440px;
+    margin: auto;
+    padding-bottom: 0;
+    border-radius: var(--radius-lg);
+  }
+
+  .anchored {
+    inset: auto;
+    top: clamp(8px, var(--y), 100dvh - 160px);
+    left: clamp(8px, var(--x), 100vw - 228px);
+    width: 220px;
+    margin: 0;
+  }
+
+  .anchored::backdrop {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .modal[open] {
+    animation: slide-up 200ms ease-out;
+  }
+
+  @media (min-width: 544px) {
+    .modal[open] {
+      animation-name: fade-in;
+    }
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}

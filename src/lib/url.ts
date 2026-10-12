@@ -1,6 +1,9 @@
 const YOUTUBE_ID = /^[\w-]{11}$/;
+const IMAGE_DATA_URL = /^data:image\/(png|jpeg|webp|gif);base64,[a-z\d+/]+=*$/i;
 
 export const isYouTubeId = (value: string) => YOUTUBE_ID.test(value);
+
+export const isImageDataUrl = (value: string) => IMAGE_DATA_URL.test(value);
 
 export function isHttpUrl(value: string): boolean {
   try {

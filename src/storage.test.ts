@@ -8,6 +8,7 @@ describe('parseTiles', () => {
       { id: 'b', x: 4, y: 0, w: 8, h: 5, type: 'youtube', videoId: 'dQw4w9WgXcQ' },
       { id: 'c', x: 12, y: 0, w: 4, h: 4, type: 'image', src: 'https://example.com/a.png', alt: '' },
       { id: 'd', x: 0, y: 6, w: 8, h: 8, type: 'website', url: 'https://example.com/' },
+      { id: 'e', x: 8, y: 6, w: 6, h: 6, type: 'image', src: 'data:image/webp;base64,UklGRg==', alt: 'cat' },
     ];
     expect(parseTiles(JSON.stringify(tiles))).toEqual(tiles);
   });
@@ -21,6 +22,7 @@ describe('parseTiles', () => {
       { id: 'e', x: 14, y: 0, w: 4, h: 4, type: 'text', text: 'past the right edge' },
       { id: 'f', x: 8, y: 0, w: 1, h: 4, type: 'text', text: 'too small' },
       { id: 'g', x: 8, y: 8, w: 4, h: 4, type: 'toString' },
+      { id: 'h', x: 0, y: 8, w: 4, h: 4, type: 'image', src: 'data:image/svg+xml;base64,PHN2Zz4=', alt: '' },
       null,
     ]);
     expect(parseTiles(json).map((t) => t.id)).toEqual(['a']);

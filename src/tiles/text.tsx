@@ -7,10 +7,10 @@ export const text: TileDef<'text'> = {
   icon: NoteIcon,
   size: { w: 6, h: 4 },
   fields: [{ name: 'text', label: 'Text', kind: 'textarea', placeholder: 'Write something…' }],
-  parse(values) {
-    const text = values.text.trim();
+  defaults: (tile) => ({ text: tile.text }),
+  parse(form) {
+    const text = String(form.get('text') ?? '').trim();
     return text ? { type: 'text', text } : { error: 'Write some text first.' };
   },
-  title: () => 'Note',
   View: ({ tile }) => <p className={styles.text}>{tile.text}</p>,
 };

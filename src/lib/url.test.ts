@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isHttpUrl, parseYouTubeId, toHttpUrl } from './url';
+import { isHttpUrl, isImageDataUrl, parseYouTubeId, toHttpUrl } from './url';
 
 describe('parseYouTubeId', () => {
   const id = 'dQw4w9WgXcQ';
@@ -50,5 +50,21 @@ describe('isHttpUrl', () => {
     expect(isHttpUrl('https://example.com')).toBe(true);
     expect(isHttpUrl('javascript:alert(1)')).toBe(false);
     expect(isHttpUrl('example.com')).toBe(false);
+  });
+});
+
+describe('isImageDataUrl', () => {
+  it('accepts base64 raster images', () => {
+    expect(isImageDataUrl('data:image/webp;base64,UklGRg==')).toBe(true);
+    expect(isImageDataUrl('data:image/jpeg;base64,/9j/4AAQ+w')).toBe(true);
+  });
+
+  it.each([
+    'data:image/svg+xml;base64,PHN2Zz4=',
+    'data:text/html;base64,PGgxPg==',
+    'data:image/png,<svg onload=alert(1)>',
+    'https://example.com/a.png',
+  ])('rejects %j', (input) => {
+    expect(isImageDataUrl(input)).toBe(false);
   });
 });
