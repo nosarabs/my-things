@@ -1,5 +1,6 @@
 import { AlertIcon, ImageIcon, XIcon } from '@primer/octicons-react';
 import { useEffect, useState, type FormEvent } from 'react';
+import { usePhotoUrl } from '../lib/photos';
 import { tileDefs, tileTypes } from '../tiles/registry';
 import type { Field, NewTile, Tile, TileDef, TileType } from '../types';
 import { Modal } from './Modal';
@@ -8,7 +9,8 @@ import styles from './TileDialog.module.css';
 type Props = {
   /** The tile to edit. Without it, the dialog adds a new tile. */
   tile?: Tile;
-  onSubmit(content: NewTile): void;
+  /** The dialog shows "Saving…" until a returned promise settles. */
+  onSubmit(content: NewTile): void | Promise<void>;
   onClose(): void;
 };
 
@@ -29,9 +31,9 @@ export function TileDialog({ tile, onSubmit, onClose }: Props) {
     if (!def || pending) return;
     setPending(true);
     const result = await def.parse(new FormData(event.currentTarget), tile);
-    setPending(false);
     if ('error' in result) setError(result.error);
-    else onSubmit(result);
+    else await onSubmit(result);
+    setPending(false);
   }
 
   return (
@@ -116,14 +118,16 @@ function FieldInput({ field, defaultValue, autoFocus }: FieldProps) {
   );
 }
 
-function ImageField({ field, defaultValue }: Omit<FieldProps, 'autoFocus'>) {
-  const [preview, setPreview] = useState(defaultValue);
+function ImageField({ field, defaultValue = '' }: Omit<FieldProps, 'autoFocus'>) {
+  const current = usePhotoUrl(defaultValue);
+  const [chosen, setChosen] = useState<string>();
+  const preview = chosen ?? current;
 
   useEffect(
     () => () => {
-      if (preview?.startsWith('blob:')) URL.revokeObjectURL(preview);
+      if (chosen) URL.revokeObjectURL(chosen);
     },
-    [preview],
+    [chosen],
   );
 
   return (
@@ -145,7 +149,7 @@ function ImageField({ field, defaultValue }: Omit<FieldProps, 'autoFocus'>) {
           accept="image/*"
           onChange={(event) => {
             const file = event.target.files?.[0];
-            if (file) setPreview(URL.createObjectURL(file));
+            if (file) setChosen(URL.createObjectURL(file));
           }}
         />
       </label>

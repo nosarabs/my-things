@@ -27,6 +27,26 @@
   flex-shrink: 0;
 }
 
+.avatarButton {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+}
+
 @media (max-width: 543px) {
   .compact {
     width: 32px;

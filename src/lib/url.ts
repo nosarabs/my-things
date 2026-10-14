@@ -1,9 +1,13 @@
 const YOUTUBE_ID = /^[\w-]{11}$/;
 const IMAGE_DATA_URL = /^data:image\/(png|jpeg|webp|gif);base64,[a-z\d+/]+=*$/i;
+const PHOTO_PATH = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}\/[\w-]+\.(webp|jpg)$/;
 
 export const isYouTubeId = (value: string) => YOUTUBE_ID.test(value);
 
 export const isImageDataUrl = (value: string) => IMAGE_DATA_URL.test(value);
+
+/** A file in the Supabase photos bucket: "<user id>/<name>.webp". */
+export const isPhotoPath = (value: string) => PHOTO_PATH.test(value);
 
 export function isHttpUrl(value: string): boolean {
   try {

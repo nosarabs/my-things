@@ -1,9 +1,14 @@
 const MAX_SIDE = 1024;
 const QUALITY = 0.8;
 
-/** Downscales a photo and encodes it as a data URL small enough to keep in localStorage. */
-export async function compressImage(file: File): Promise<string> {
-  const bitmap = await createImageBitmap(file);
+const toBlob = (canvas: HTMLCanvasElement, type: string) =>
+  new Promise<Blob>((resolve, reject) =>
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('Could not encode image'))), type, QUALITY),
+  );
+
+/** Downscales a photo and re-encodes it as WebP (JPEG where WebP encoding isn't supported). */
+export async function compressImage(image: Blob): Promise<Blob> {
+  const bitmap = await createImageBitmap(image);
   const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(bitmap.width * scale);
@@ -12,22 +17,26 @@ export async function compressImage(file: File): Promise<string> {
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
 
-  const webp = canvas.toDataURL('image/webp', QUALITY);
-  if (webp.startsWith('data:image/webp')) return webp;
+  const webp = await toBlob(canvas, 'image/webp');
+  if (webp.type === 'image/webp') return webp;
 
   // Safari can't encode WebP. JPEG has no transparency, so paint white behind the image first.
   ctx.globalCompositeOperation = 'destination-over';
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL('image/jpeg', QUALITY);
+  return toBlob(canvas, 'image/jpeg');
 }
 
-/** Browsers refuse to open data: URLs in a new tab, so hand back a temporary blob: URL instead. */
-export function toOpenableUrl(src: string): string {
-  if (!src.startsWith('data:')) return src;
+export const blobToDataUrl = (blob: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+
+export function dataUrlToBlob(src: string): Blob {
   const [meta, data] = src.split(',');
   const bytes = Uint8Array.from(atob(data), (char) => char.charCodeAt(0));
-  const url = URL.createObjectURL(new Blob([bytes], { type: meta.slice(5).split(';')[0] }));
-  setTimeout(() => URL.revokeObjectURL(url), 60_000);
-  return url;
+  return new Blob([bytes], { type: meta.slice(5).split(';')[0] });
 }

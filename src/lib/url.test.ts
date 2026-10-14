@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isHttpUrl, isImageDataUrl, parseYouTubeId, toHttpUrl } from './url';
+import { isHttpUrl, isImageDataUrl, isPhotoPath, parseYouTubeId, toHttpUrl } from './url';
 
 describe('parseYouTubeId', () => {
   const id = 'dQw4w9WgXcQ';
@@ -66,5 +66,24 @@ describe('isImageDataUrl', () => {
     'https://example.com/a.png',
   ])('rejects %j', (input) => {
     expect(isImageDataUrl(input)).toBe(false);
+  });
+});
+
+describe('isPhotoPath', () => {
+  const user = '0b6f4c2e-9d1a-4f3b-8c5e-7a2d1e0f9b8c';
+
+  it('accepts files in a user folder', () => {
+    expect(isPhotoPath(`${user}/9f1c2d3e-4b5a-6c7d-8e9f-0a1b2c3d4e5f.webp`)).toBe(true);
+    expect(isPhotoPath(`${user}/photo.jpg`)).toBe(true);
+  });
+
+  it.each([
+    'photo.webp',
+    `${user}/photo.png`,
+    `${user}/../other/photo.webp`,
+    `${user}/nested/photo.webp`,
+    `https://example.com/${user}/photo.webp`,
+  ])('rejects %j', (input) => {
+    expect(isPhotoPath(input)).toBe(false);
   });
 });

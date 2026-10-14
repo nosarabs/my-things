@@ -55,7 +55,10 @@ export function firstFit(size: Size, others: Rect[]): Rect {
   }
 }
 
-export const boardRows = (rects: Rect[]) => Math.max(0, ...rects.map((r) => r.y + r.h)) + EXTRA_ROWS;
+/** The first row below every rect. */
+export const bottomRow = (rects: Rect[]) => Math.max(0, ...rects.map((r) => r.y + r.h));
+
+export const boardRows = (rects: Rect[]) => bottomRow(rects) + EXTRA_ROWS;
 
 export const gridArea = ({ x, y, w, h }: Rect) => ({
   gridColumn: `${x + 1} / span ${w}`,

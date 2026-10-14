@@ -2,7 +2,7 @@ import { LinkExternalIcon, PencilIcon, TrashIcon } from '@primer/octicons-react'
 import { tileDefs } from '../tiles/registry';
 import type { Tile, TileDef, TileType } from '../types';
 import { Modal } from './Modal';
-import styles from './TileMenu.module.css';
+import styles from './Menu.module.css';
 
 type Props = {
   tile: Tile;

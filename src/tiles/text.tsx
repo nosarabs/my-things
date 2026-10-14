@@ -1,4 +1,5 @@
 import { NoteIcon } from '@primer/octicons-react';
+import { MAX_TEXT } from '../storage';
 import type { TileDef } from '../types';
 import styles from './tiles.module.css';
 
@@ -10,7 +11,9 @@ export const text: TileDef<'text'> = {
   defaults: (tile) => ({ text: tile.text }),
   parse(form) {
     const text = String(form.get('text') ?? '').trim();
-    return text ? { type: 'text', text } : { error: 'Write some text first.' };
+    if (!text) return { error: 'Write some text first.' };
+    if (text.length > MAX_TEXT) return { error: `Keep it under ${MAX_TEXT.toLocaleString()} characters.` };
+    return { type: 'text', text };
   },
   View: ({ tile }) => <p className={styles.text}>{tile.text}</p>,
 };

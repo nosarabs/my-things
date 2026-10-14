@@ -26,7 +26,10 @@ import { TileMenu } from './TileMenu';
 type Props = {
   tiles: Tile[];
   focusId: string | null;
-  onAdd(cell: Cell): void;
+  /** A message shown over the mat, like the empty-board hint. */
+  hint?: string;
+  /** Omit to stop taps on the mat from adding tiles. */
+  onAdd?(cell: Cell): void;
   onMove(id: string, rect: Rect): void;
   onEdit(tile: Tile): void;
   onRemove(id: string): void;
@@ -34,7 +37,7 @@ type Props = {
 
 type Point = { clientX: number; clientY: number };
 
-export function Board({ tiles, focusId, onAdd, onMove, onEdit, onRemove }: Props) {
+export function Board({ tiles, focusId, hint, onAdd, onMove, onEdit, onRemove }: Props) {
   const boardRef = useRef<HTMLDivElement>(null);
   const swallowClick = useRef(false);
   const [draft, setDraft] = useState<(Rect & { id: string }) | null>(null);
@@ -137,20 +140,20 @@ export function Board({ tiles, focusId, onAdd, onMove, onEdit, onRemove }: Props
           }
         }}
         onClick={(event) => {
-          if (swallowClick.current || !isMat(event)) return;
+          if (!onAdd || swallowClick.current || !isMat(event)) return;
           const cell = cellAt(event);
           if (canPlace(cell, tiles)) onAdd(cell);
         }}
         onPointerMove={(event) => {
           if (event.pointerType !== 'mouse') return;
-          const cell = isMat(event) && !draft ? cellAt(event) : null;
+          const cell = onAdd && isMat(event) && !draft ? cellAt(event) : null;
           const next = cell && canPlace(cell, tiles) ? cell : null;
           if (next?.x !== hover?.x || next?.y !== hover?.y) setHover(next);
         }}
         onPointerLeave={() => setHover(null)}
       >
         <div ref={boardRef} className={styles.board} style={{ gridTemplateRows: `repeat(${rows}, var(--cell))` }}>
-          {tiles.length === 0 && <p className={styles.hint}>Tap anywhere on the mat to add a tile.</p>}
+          {hint && <p className={styles.hint}>{hint}</p>}
           {hover && (
             <div className={styles.ghost} style={gridArea({ ...hover, w: 1, h: 1 })}>
               <PlusIcon size={16} />

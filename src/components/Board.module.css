@@ -41,9 +41,11 @@
   top: calc(var(--cell) * 2);
   right: 0;
   left: 0;
+  padding: 0 16px;
   color: var(--fg-muted);
   font-size: 14px;
   text-align: center;
+  text-wrap: balance;
   pointer-events: none;
 }
 
